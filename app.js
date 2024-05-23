@@ -1,6 +1,7 @@
 const connectButton = document.getElementById('connect-button');
 const disconnectButton = document.getElementById('disconnect-button');
 const fileInput = document.getElementById('file-input');
+const dataInput = document.getElementById('data-input');
 const dataSelect = document.getElementById('data-select');
 const sendButton = document.getElementById('send-button');
 const output = document.getElementById('output');
@@ -20,8 +21,11 @@ connectButton.addEventListener('click', async () => {
     
     output.textContent = 'Connected to serial port.';
     connectButton.disabled = true;
+    dataSelect.disabled = false;
+    dataInput.disabled = false;
     disconnectButton.disabled = false;
     fileInput.disabled = false;
+    sendButton.disabled = false;
 });
 
 disconnectButton.addEventListener('click', async () => {
@@ -36,6 +40,7 @@ disconnectButton.addEventListener('click', async () => {
         disconnectButton.disabled = true;
         fileInput.disabled = true;
         dataSelect.disabled = true;
+        dataInput.disabled = true;
         sendButton.disabled = true;
 });
 
@@ -62,12 +67,10 @@ function populateSelect(rows) {
     });
 
     dataSelect.disabled = false;
-    sendButton.disabled = false;
 }
 
 sendButton.addEventListener('click', async () => {
-    const selectedIndex = dataSelect.value;
-    const selectedText = dataSelect.options[selectedIndex].text;
+    const selectedText = dataInput.value;
 
     try {
         await writer.write(new TextEncoder().encode(selectedText));
@@ -75,4 +78,9 @@ sendButton.addEventListener('click', async () => {
     } catch (error) {
         output.textContent = `Error: ${error}`;
     }
+});
+
+dataSelect.addEventListener('change', (event) => {
+    const index = event.target.value;
+    dataInput.value = event.target.options[index].text;
 });
