@@ -14,14 +14,14 @@ connectButton.addEventListener('click', async () => {
         await port.open({ baudRate: 9600 });
 
         writer = port.writable.getWriter();
-
-        output.textContent = 'Connected to serial port.';
-        connectButton.disabled = true;
-        disconnectButton.disabled = false;
-        fileInput.disabled = false;
     } catch (error) {
         output.textContent = `Error: ${error}`;
     }
+    
+    output.textContent = 'Connected to serial port.';
+    connectButton.disabled = true;
+    disconnectButton.disabled = false;
+    fileInput.disabled = false;
 });
 
 disconnectButton.addEventListener('click', async () => {
@@ -29,14 +29,14 @@ disconnectButton.addEventListener('click', async () => {
         await writer.releaseLock();
         await port.close();
         output.textContent = 'Disconnected from serial port.';
+    } catch (error) {
+        output.textContent = `Error: ${error}`;
+    }
         connectButton.disabled = false;
         disconnectButton.disabled = true;
         fileInput.disabled = true;
         dataSelect.disabled = true;
         sendButton.disabled = true;
-    } catch (error) {
-        output.textContent = `Error: ${error}`;
-    }
 });
 
 fileInput.addEventListener('change', async (event) => {
