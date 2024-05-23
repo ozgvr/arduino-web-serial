@@ -4,26 +4,34 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Web Serial Test</title>
+    <style>
+        body {
+            font-family: monospace;
+        }
+        #output {
+            width: 80%;
+            padding: 10px;
+            margin: 10px 0;
+        }
+    </style>
 </head>
-<style>
-    body{
-        font-family: monospace;
-    }
-</style>
 <body>
 
     <h1>Web Serial Test</h1>
-    <h3>Connection</h3>
+    <h3>Serial Connection</h3>
     <button id="connect-button">Connect</button>
     <button id="disconnect-button" disabled>Disconnect</button>
     <hr />
-    <h3>Send data</h3>
-    <input type="text" id="input-box" placeholder="Enter text" disabled>
+    <h3>Import CSV</h3>
+    <input file="file" id="file-input" type="file" disabled>
+    <hr />
+    <h3>Select data</h3>
+    <select id="data-select" disabled multiple style="display:block"></select>
     <button id="send-button" disabled>Send</button>
     <hr />
-    <h3>Output</h3>
-    <input type="text" readonly id="output"></input>
-    
+    <h3>Status</h3>
+    <p id="output">None</p>
+
     <script src="app.js"></script>
 </body>
 </html>

@@ -1,8 +1,10 @@
 const connectButton = document.getElementById('connect-button');
 const disconnectButton = document.getElementById('disconnect-button');
+const fileInput = document.getElementById('file-input');
+const dataSelect = document.getElementById('data-select');
 const sendButton = document.getElementById('send-button');
-const inputBox = document.getElementById('input-box');
 const output = document.getElementById('output');
+
 let port;
 let writer;
 
@@ -16,8 +18,7 @@ connectButton.addEventListener('click', async () => {
         output.textContent = 'Connected to serial port.';
         connectButton.disabled = true;
         disconnectButton.disabled = false;
-        inputBox.disabled = false;
-        sendButton.disabled = false;
+        fileInput.disabled = false;
     } catch (error) {
         output.textContent = `Error: ${error}`;
     }
@@ -30,18 +31,47 @@ disconnectButton.addEventListener('click', async () => {
         output.textContent = 'Disconnected from serial port.';
         connectButton.disabled = false;
         disconnectButton.disabled = true;
-        inputBox.disabled = true;
+        fileInput.disabled = true;
+        dataSelect.disabled = true;
         sendButton.disabled = true;
     } catch (error) {
         output.textContent = `Error: ${error}`;
     }
 });
 
+fileInput.addEventListener('change', async (event) => {
+    const file = event.target.files[0];
+    if (!file) return;
+
+    const reader = new FileReader();
+    reader.onload = (e) => {
+        const text = e.target.result;
+        const rows = text.split('\n').map(row => row.split(','));
+        populateSelect(rows);
+    };
+    reader.readAsText(file);
+});
+
+function populateSelect(rows) {
+    dataSelect.innerHTML = '';
+    rows.forEach((row, index) => {
+        const option = document.createElement('option');
+        option.value = index;
+        option.text = row.join(', ');
+        dataSelect.appendChild(option);
+    });
+
+    dataSelect.disabled = false;
+    sendButton.disabled = false;
+}
+
 sendButton.addEventListener('click', async () => {
-    const text = inputBox.value;
+    const selectedIndex = dataSelect.value;
+    const selectedText = dataSelect.options[selectedIndex].text;
+
     try {
-        await writer.write(new TextEncoder().encode(text));
-        output.textContent = `Sent: ${text}`;
+        await writer.write(new TextEncoder().encode(selectedText));
+        output.textContent = `Sent: "${selectedText}"`;
     } catch (error) {
         output.textContent = `Error: ${error}`;
     }
