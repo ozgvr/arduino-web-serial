@@ -3,6 +3,8 @@ const disconnectButton = document.getElementById('disconnect-button');
 const fileInput = document.getElementById('file-input');
 const dataInput = document.getElementById('data-input');
 const dataSelect = document.getElementById('data-select');
+const dataLimitCheck = document.getElementById('data-limit');
+const dataLimitInput = document.getElementById('data-limit-input');
 const sendButton = document.getElementById('send-button');
 const output = document.getElementById('output');
 
@@ -27,6 +29,16 @@ connectButton.addEventListener('click', async () => {
     fileInput.disabled = false;
     sendButton.disabled = false;
 });
+
+dataLimitCheck.addEventListener('change', () => {
+    if (dataLimitCheck.checked) {
+        dataLimitInput.disabled = false;
+    }else{
+        dataLimitInput.disabled = true;
+        dataLimitInput.value = 0;
+    }
+});
+
 
 disconnectButton.addEventListener('click', async () => {
     try {
@@ -82,5 +94,15 @@ sendButton.addEventListener('click', async () => {
 
 dataSelect.addEventListener('change', (event) => {
     const index = event.target.value;
-    dataInput.value = event.target.options[index].text;
+
+    const dataLimit = parseInt(dataLimitInput.value);
+
+    if(dataLimitCheck.checked && dataLimit > 0){
+        const dataArray = event.target.options[index].text.split(',');
+        const firstItem = dataArray[0].slice(0, dataLimit)
+        dataInput.value = [firstItem, ...dataArray.slice(1)].join(',');
+    }else{
+        dataInput.value = event.target.options[index].text;
+    }
+
 });
